@@ -5,7 +5,7 @@ docker build -t atulya-zero-run:local --build-arg BRANCH=development --build-arg
 docker build -t atulya-zero-run:local --build-arg BRANCH=main --no-cache  .
 
 # local image from Kali
-docker build -f ./DockerfileKali -t atulya-zero-run:hacking --build-arg BRANCH=main --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
+docker build -f ./DockerfileKali -t atulya-zero:hacking --build-arg BRANCH=main --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
 
 # dockerhub push:
 

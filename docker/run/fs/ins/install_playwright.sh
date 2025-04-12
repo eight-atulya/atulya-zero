@@ -14,6 +14,4 @@ if [ "$@" = "hacking" ]; then
 else
     # for debian based
     playwright install --with-deps chromium-headless-shell
-    apt-get install libgtk-3-0 libgtk-3-dev
 fi
-
