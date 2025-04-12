@@ -3,6 +3,7 @@ import json
 import time
 from atulya import Atulya, InterventionException
 
+import browser_use.agent
 import models
 from python.helpers.tool import Tool, Response
 from python.helpers import dirty_json, files, rfc_exchange, defer, strings, persist_chat
@@ -116,7 +117,7 @@ class State:
             **self.atulya.config.browser_model.kwargs,
         )
 
-        self.use_atulya = browser_use.Atulya(
+        self.use_atulya = browser_use.Agent(
             task=task,
             browser_context=self.context,
             llm=model,
