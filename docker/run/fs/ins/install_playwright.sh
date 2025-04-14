@@ -7,4 +7,4 @@
 pip install playwright
 
 # install chromium with dependencies
-playwright install --with-deps chromium-headless-shell
+playwright install
