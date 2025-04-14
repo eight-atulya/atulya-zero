@@ -18,7 +18,7 @@ Refer to the [Choosing your LLMs](installation.md#installing-and-using-ollama-lo
 Refer to the [How to update Atulya Zero](installation.md#how-to-update-atulya-zero) section of the documentation for instructions on how to update Atulya Zero while retaining memory and data.
 
 **7. Where can I find more documentation or tutorials?**
--   Join the Atulya Zero [Skool](https://www.skool.com/atulya-zero) or [Discord](https://discord.gg/Z2tun2N3) community for support and discussions.
+-   Join the Atulya Zero 
 
 **8. How do I adjust API rate limits?**
 Modify the `rate_limit_seconds` and `rate_limit_requests` parameters in the `AtulyaConfig` class within `initialize.py`.
