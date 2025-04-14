@@ -7,14 +7,14 @@
 
 :root {
   /* Dark mode */
-  --color-background-dark: #131313;
+  --color-background-dark: #000000;
   --color-text-dark: #d4d4d4;
-  --color-primary-dark: #737a81;
-  --color-secondary-dark: #656565;
+  --color-primary-dark: #05498d;
+  --color-secondary-dark: #14af00;
   --color-accent-dark: #cf6679;
   --color-message-bg-dark: #2d2d2d;
   --color-message-text-dark: #e0e0e0;
-  --color-panel-dark: #171717;
+  --color-panel-dark: #222121;
   --color-border-dark: #444444a8;
   --color-input-dark: #131313;
   --color-input-focus-dark: #101010;

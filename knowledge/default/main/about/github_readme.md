@@ -1,6 +1,6 @@
 
 
-## A ai framework that grows and learns with you
+## An ai framework that grows and learns with you
 
 - Atulya Zero is not a predefined ai framework. It is designed to be dynamic, organically growing, and learning as you use it.
 - Atulya Zero is fully transparent, readable, comprehensible, customizable, and interactive.
