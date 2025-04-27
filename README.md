@@ -11,7 +11,7 @@
 
 ---
 
-# 🌱 A Personal, Organic AI Framework That Grows and Learns With You
+# A Personal, Organic AI Framework That Grows and Learns With You
 
 - Atulya is not a predefined AI framework. It is designed to be dynamic, organically growing, and learning as you use it.
 - Fully transparent, readable, comprehensible, customizable, and interactive.
@@ -19,7 +19,7 @@
 
 ---
 
-# 💡 Key Features
+# Key Features
 
 ## 1. General-purpose Assistant
 
@@ -53,7 +53,7 @@
 
 ---
 
-# 🚀 Things You Can Build With Atulya Zero
+# Things You Can Build With Atulya Zero
 
 - **Development Projects** - "Create a React dashboard with real-time data visualization."
 - **Data Analysis** - "Analyze last quarter's NVIDIA sales data and create trend reports."
@@ -83,13 +83,43 @@ docker run -p 50001:80 eight-atulya/atulya-zero-run
 
 ---
 
-# 🐳 Fully Dockerized, With Speech-to-Text and TTS
+# Fully Dockerized, With Speech-to-Text and TTS
 
 - Customizable settings allow users to tailor Atulya's behavior and responses to their needs.
 - The Web UI output is clean, fluid, colorful, readable, and interactive.
 - Load or save chats directly within the Web UI.
 - Session outputs are automatically saved to an HTML file in the **logs/** folder.
 - No coding is required; only prompting and communication skills are necessary.
+
+---
+
+# 🛠️ Atulya Zero API
+
+Atulya Zero now includes a powerful API, available in the `atulya_api` module. This API enables programmatic access to Atulya's core features, making it easy to integrate Atulya Zero into your own applications, scripts, or services.
+
+## Key Features
+- **RESTful Endpoints:** Interact with Atulya Zero using standard HTTP methods.
+- **Task Automation:** Submit tasks, retrieve results, and manage sessions programmatically.
+- **Extensible:** Easily add custom endpoints or extend existing functionality.
+- **Django-based:** Built on Django for reliability and scalability.
+
+## Getting Started
+- The API code is located in the `atulya_api/` directory.
+- To run the API server:
+  ```bash
+  cd atulya_api
+  python run.py
+  ```
+- Default settings and configuration can be found in `atulya_api/config/settings.py`.
+
+## API Documentation
+- Interactive API docs are available at `/docs` when the server is running.
+- See [docs/api_documentation.md](./docs/api_documentation.md) for detailed endpoint descriptions and usage examples.
+
+## Example Use Cases
+- Integrate Atulya Zero with external tools or web services.
+- Automate workflows by sending tasks to Atulya via HTTP requests.
+- Build custom user interfaces or chatbots powered by Atulya's intelligence.
 
 ---
 

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atulya-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: atulya
+  template:
+    metadata:
+      labels:
+        app: atulya
+    spec:
+      containers:
+      - name: atulya
+        image: your-docker-image:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENV_VAR_EXAMPLE
+          value: "value"

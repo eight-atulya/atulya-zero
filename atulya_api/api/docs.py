@@ -6,7 +6,9 @@ It includes route definitions, request/response schemas, and authentication deta
 """
 from fastapi import APIRouter, Depends
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
-from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse, JSONResponse
+from typing import Dict, Any
 
 router = APIRouter(tags=["documentation"])
 
@@ -40,7 +42,11 @@ async def get_redoc_documentation():
 tags_metadata = [
     {
         "name": "handlers",
-        "description": "Operations with atulya-zero API handlers. These endpoints provide access to the core functionality.",
+        "description": "Core Atulya-zero API handlers. These endpoints provide access to chat, file, knowledge, and utility operations.",
+        "externalDocs": {
+            "description": "Full API Reference",
+            "url": "https://github.com/your-username/atulya-zero/docs/api_documentation.md"
+        }
     },
     {
         "name": "health",
@@ -48,11 +54,27 @@ tags_metadata = [
     },
     {
         "name": "user",
-        "description": "User management operations (when implemented).",
+        "description": "User management operations (future feature).",
     },
     {
         "name": "authentication",
-        "description": "Authentication operations for API access.",
+        "description": "API Key authentication for secure access. All endpoints except health/docs require a valid API key.",
+    },
+    {
+        "name": "files",
+        "description": "Endpoints for file upload, download, and management.",
+    },
+    {
+        "name": "settings",
+        "description": "Endpoints for retrieving and updating system settings.",
+    },
+    {
+        "name": "knowledge",
+        "description": "Endpoints for importing and querying knowledge base files.",
+    },
+    {
+        "name": "transcription",
+        "description": "Endpoints for audio transcription and speech-to-text features.",
     },
 ]
 
@@ -87,9 +109,23 @@ api_metadata = {
     
     ## API Structure
     
-    The API is organized around handlers that provide specific functionality:
+    - All endpoints are versioned under `/api/v1/`.
+    - All endpoints (except `/health` and `/docs`) require API Key authentication.
+    - All endpoints return OpenAPI-compliant responses with detailed error codes.
+    
+    ## Main Endpoints
     - `GET /api/v1/handlers/` - List all available handlers
     - `POST /api/v1/handlers/{handler_name}` - Execute a specific handler
+    - `POST /api/v1/message` - Send a message to the assistant
+    - `POST /api/v1/upload` - Upload files
+    - `POST /api/v1/import_knowledge` - Import knowledge files
+    - `POST /api/v1/transcribe` - Transcribe audio
+    - `POST /api/v1/settings_get` - Retrieve settings
+    - `POST /api/v1/settings_set` - Update settings
+    - `POST /api/v1/poll` - Poll for logs and status
+    - `GET /api/v1/health` - Health check
+    
+    For a full list of endpoints and schemas, see the [API documentation](https://github.com/your-username/atulya-zero/docs/api_documentation.md).
     """,
     "version": "0.1.0",
     "contact": {

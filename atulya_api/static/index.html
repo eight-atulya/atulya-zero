@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>atulya-zero API Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f8fc;
+        }
+        header {
+            background-color: #264b6a;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .doc-options {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .doc-option {
+            flex: 1;
+            min-width: 300px;
+            max-width: 450px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #0052cc;
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #003d99;
+        }
+        .features {
+            margin-top: 3rem;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .feature {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #f0f2f5;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>atulya-zero API Documentation</h1>
+        <p>Modern API System for atulya-zero using FastAPI + Django</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Welcome to the atulya-zero API</h2>
+            <p>
+                This API provides access to all atulya-zero functionality through a modern, RESTful interface.<br>
+                <strong>Base URL:</strong> <code>http://localhost:8000/api/v1/</code><br>
+                <strong>Authentication:</strong> API Key via <code>X-API-Key</code> header or <code>?api_key=</code> query param.<br>
+                <strong>Version:</strong> 0.1.0
+            </p>
+            <ul>
+                <li><strong>All endpoints (except /health and /docs) require authentication.</strong></li>
+                <li>All endpoints return OpenAPI-compliant responses with detailed error codes.</li>
+                <li>See <a href="https://github.com/your-username/atulya-zero/docs/api_documentation.md" target="_blank">full API documentation</a> for request/response schemas and examples.</li>
+            </ul>
+            <div class="doc-options">
+                <div class="doc-option">
+                    <h3>Swagger UI</h3>
+                    <p>Interactive documentation with a user-friendly interface. Test API endpoints directly from your browser.</p>
+                    <a href="/docs" class="btn">Explore with Swagger UI</a>
+                </div>
+                <div class="doc-option">
+                    <h3>ReDoc</h3>
+                    <p>Clean, responsive documentation with a three-panel design for better readability.</p>
+                    <a href="/redoc" class="btn">View in ReDoc</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Quick Start for Developers</h2>
+            <ol>
+                <li>Obtain your API key from the admin or your user dashboard.</li>
+                <li>Set the <code>X-API-Key</code> header or <code>?api_key=</code> query parameter in your requests.</li>
+                <li>Use the endpoints below to interact with Atulya Zero. See request/response examples for each endpoint.</li>
+            </ol>
+            <pre><code>// Example: Send a message
+fetch('http://localhost:8000/api/v1/message', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-API-Key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({ text: 'Hello, Atulya!' })
+})
+.then(res => res.json())
+.then(console.log);
+</code></pre>
+        </div>
+
+        <div class="features">
+            <h2>API Endpoints Overview</h2>
+            <div class="feature-list">
+                <div class="feature">
+                    <h3>GET /handlers/</h3>
+                    <p>List all available API handlers.<br><strong>Response:</strong> <code>{ handlers: string[] }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /handlers/{handler_name}</h3>
+                    <p>Execute a specific handler with parameters.<br><strong>Request:</strong> <code>{ params: object }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /message</h3>
+                    <p>Send a message to the assistant and receive a response.<br><strong>Request:</strong> <code>{ text: string, context?: string }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /upload</h3>
+                    <p>Upload files to the server.<br><strong>Request:</strong> <code>multipart/form-data</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /import_knowledge</h3>
+                    <p>Import knowledge files and reload memory.<br><strong>Request:</strong> <code>multipart/form-data</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /transcribe</h3>
+                    <p>Transcribe audio using the Whisper model.<br><strong>Request:</strong> <code>{ audio: base64, ctxid?: string }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /settings_get</h3>
+                    <p>Retrieve current system settings.<br><strong>Response:</strong> <code>{ settings: object }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /settings_set</h3>
+                    <p>Update system settings.<br><strong>Request:</strong> <code>{ settings: object }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>POST /poll</h3>
+                    <p>Poll for logs and status updates.<br><strong>Request:</strong> <code>{ context?: string, log_from?: number }</code></p>
+                </div>
+                <div class="feature">
+                    <h3>GET /health</h3>
+                    <p>Health check endpoint to verify API is running.<br><strong>Response:</strong> <code>{ status: 'healthy', version: string }</code></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>Authentication & Security</h2>
+            <ul>
+                <li>All endpoints (except <code>/health</code> and <code>/docs</code>) require an API key.</li>
+                <li>API keys can be managed via the Django admin interface.</li>
+                <li>Rate limiting and request logging are enabled for all endpoints.</li>
+                <li>All requests and responses are logged for auditing and debugging.</li>
+            </ul>
+        </div>
+
+        <div class="features">
+            <h2>Error Handling</h2>
+            <p>All errors return a JSON response with <code>success: false</code>, <code>error</code>, and <code>error_code</code> fields. Example:</p>
+            <pre><code>{
+  "success": false,
+  "error": "Invalid API key",
+  "error_code": "AUTH_ERROR"
+}</code></pre>
+        </div>
+
+        <div class="features">
+            <h2>Useful Links</h2>
+            <ul>
+                <li><a href="https://github.com/your-username/atulya-zero" target="_blank">GitHub Repository</a></li>
+                <li><a href="https://github.com/your-username/atulya-zero/docs/api_documentation.md" target="_blank">Full API Documentation</a></li>
+                <li><a href="/docs" target="_blank">Swagger UI</a></li>
+                <li><a href="/redoc" target="_blank">ReDoc</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 atulya-zero API. All rights reserved.</p>
+    </footer>
+</body>
+</html>

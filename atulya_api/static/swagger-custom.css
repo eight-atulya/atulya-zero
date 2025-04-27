@@ -1,0 +1,186 @@
+/* Custom CSS for Swagger UI */
+:root {
+  --atulya-primary: #0052cc;
+  --atulya-secondary: #264b6a;
+  --atulya-bg: #f7f8fc;
+  --atulya-text: #2d3748;
+  --atulya-light-text: #718096;
+  --atulya-accent: #49cc90;
+  --atulya-danger: #e74c3c;
+  --atulya-warning: #f1c40f;
+  --atulya-info: #61affe;
+  --atulya-card-bg: #fff;
+  --atulya-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --atulya-radius: 12px;
+}
+
+body, .swagger-ui {
+  background: var(--atulya-bg) !important;
+}
+
+.swagger-ui .topbar {
+  background: linear-gradient(90deg, var(--atulya-secondary) 0%, var(--atulya-primary) 100%);
+  padding: 18px 0;
+  box-shadow: var(--atulya-shadow);
+}
+
+.swagger-ui .topbar-wrapper img[alt="Swagger UI"],
+.swagger-ui .topbar-wrapper span {
+  display: none;
+}
+
+.swagger-ui .topbar-wrapper:before {
+  content: "atulya-zero API";
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.swagger-ui .info {
+  background: var(--atulya-card-bg);
+  border-radius: var(--atulya-radius);
+  box-shadow: var(--atulya-shadow);
+  margin: 40px 0 30px 0;
+  padding: 32px 40px;
+}
+
+.swagger-ui .info .title {
+  color: var(--atulya-primary);
+  font-weight: 800;
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+}
+
+.swagger-ui .info .base-url {
+  color: var(--atulya-info);
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+
+.swagger-ui .opblock {
+  margin: 0 0 24px;
+  border-radius: var(--atulya-radius);
+  box-shadow: var(--atulya-shadow);
+  border: none;
+  background: var(--atulya-card-bg);
+  transition: box-shadow 0.2s;
+}
+
+.swagger-ui .opblock:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.swagger-ui .opblock.opblock-post {
+  border-left: 6px solid var(--atulya-accent);
+}
+
+.swagger-ui .opblock.opblock-get {
+  border-left: 6px solid var(--atulya-info);
+}
+
+.swagger-ui .opblock.opblock-delete {
+  border-left: 6px solid var(--atulya-danger);
+}
+
+.swagger-ui .opblock.opblock-put {
+  border-left: 6px solid var(--atulya-warning);
+}
+
+.swagger-ui .opblock .opblock-summary {
+  border-radius: var(--atulya-radius) var(--atulya-radius) 0 0;
+  background: linear-gradient(90deg, var(--atulya-primary) 0%, var(--atulya-secondary) 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 18px 24px;
+}
+
+.swagger-ui .opblock .opblock-summary-operation-id,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-path__deprecated {
+  color: #fff;
+  font-family: 'Fira Mono', 'Consolas', monospace;
+  font-size: 1.05rem;
+}
+
+.swagger-ui .btn.execute {
+  background: linear-gradient(90deg, var(--atulya-primary) 0%, var(--atulya-accent) 100%);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+}
+.swagger-ui .btn.execute:hover {
+  background: linear-gradient(90deg, var(--atulya-accent) 0%, var(--atulya-primary) 100%);
+}
+
+.swagger-ui .parameters-col_description, .swagger-ui .response-col_description {
+  color: var(--atulya-text);
+  font-size: 1.05rem;
+}
+
+.swagger-ui .model-title, .swagger-ui .model {
+  color: var(--atulya-primary);
+  font-weight: 600;
+}
+
+.swagger-ui section.models {
+  border-radius: var(--atulya-radius);
+  background: var(--atulya-card-bg);
+  box-shadow: var(--atulya-shadow);
+  margin-top: 24px;
+}
+
+.swagger-ui section.models .model-container {
+  margin: 0 0 15px;
+  border-radius: var(--atulya-radius);
+  box-shadow: var(--atulya-shadow);
+}
+
+.swagger-ui .responses-inner {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.swagger-ui .response-col_status {
+  font-weight: 700;
+  color: var(--atulya-accent);
+}
+
+.swagger-ui .response-col_description {
+  color: var(--atulya-text);
+}
+
+.swagger-ui .tab li {
+  border-radius: 6px 6px 0 0;
+}
+
+.swagger-ui .tab li.active {
+  background: var(--atulya-primary);
+  color: #fff;
+}
+
+.swagger-ui .scheme-container {
+  background: var(--atulya-card-bg);
+  border-radius: var(--atulya-radius);
+  box-shadow: var(--atulya-shadow);
+  margin-bottom: 24px;
+}
+
+.swagger-ui .markdown p, .swagger-ui .markdown pre, .swagger-ui .markdown code {
+  font-size: 1.05rem;
+}
+
+/* Custom scrollbar */
+.swagger-ui ::-webkit-scrollbar {
+  width: 10px;
+  background: #e9ecef;
+}
+.swagger-ui ::-webkit-scrollbar-thumb {
+  background: var(--atulya-primary);
+  border-radius: 8px;
+}
