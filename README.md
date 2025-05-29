@@ -2,116 +2,185 @@
 
 ![Atulya Zero](/docs/res/header.png)
 
-[Installation](./docs/installation.md) • [How to Update](./docs/installation.md#how-to-update-atulya-zero) • [Documentation](./docs/README.md) • [Usage](./docs/usage.md)
+
+
+An advanced, self-evolving AI framework designed for autonomous task execution and intelligent system interaction.
+
+[![Installation Guide](https://img.shields.io/badge/docs-installation-blue)](./docs/installation.md)
+[![Documentation](https://img.shields.io/badge/docs-documentation-green)](./docs/README.md)
+[![Usage Guide](https://img.shields.io/badge/docs-usage-orange)](./docs/usage.md)
 
 </div>
 
-> [!NOTE]
-> **🎉 v0.0.0.1 Release**: Now featuring Atulya capable of using Chromium for web interactions! This enables Atulya to browse the web, gather information, and interact with web content autonomously.
+## Latest Release
+
+**Version 0.0.0.1** introduces significant enhancements to the Atulya Zero framework:
+
+- **Web Automation**: Advanced Chromium integration for autonomous web browsing, data collection, and content interaction
+- **Task Scheduling**: Intelligent scheduling system for complex, multi-step task execution and workflow management
+- **Enhanced Code Execution**: Improved code execution engine with better error handling, security isolation, and performance optimization
+- **Plugin-based Instruments**: Modular instrument architecture allowing seamless integration of custom tools and extensions
+- **Human-like Memory System**: Advanced cognitive memory architecture that mimics human memory patterns, including episodic, semantic, and working memory components
+- **Legacy Feature Support**: Backward compatibility layer ensuring seamless migration from previous versions while maintaining extended functionality
+- **ADHD-inspired Dreaming**: Innovative background processing system that simulates human-like dreaming and attention patterns, enabling creative problem-solving and non-linear thinking processes
+- **Upcoming UI Redesign**: Next-generation user interface with enhanced visualization, real-time monitoring, and improved user experience (coming soon)
 
 ---
 
-# 🌱 A Personal, Organic AI Framework That Grows and Learns With You
+## Overview
 
-- Atulya is not a predefined AI framework. It is designed to be dynamic, organically growing, and learning as you use it.
-- Fully transparent, readable, comprehensible, customizable, and interactive.
-- Uses the computer as a tool to accomplish its (your) tasks.
+Atulya Zero is an adaptive AI framework that transcends traditional pre-configured limitations. The system operates as a dynamic, learning-oriented platform that evolves through usage patterns and accumulated experience.
 
----
+### Core Principles
 
-# 💡 Key Features
-
-## 1. General-purpose Assistant
-
-- Atulya is not pre-programmed for specific tasks (but can be). It is meant to be a general-purpose personal assistant. Give it a task, and it will gather information, execute commands and code, cooperate with other Atulya instances, and do its best to accomplish it.
-- Persistent memory allows it to memorize previous solutions, code, facts, instructions, etc., to solve tasks faster and more reliably in the future.
-
-## 2. Computer as a Tool
-
-- Atulya uses the operating system as a tool to accomplish its tasks. It has no single-purpose tools pre-programmed. Instead, it can write its own code and use the terminal to create and use its own tools as needed.
-- **Default Tools:** Includes knowledge, webpage content, code execution, and communication.
-- **Creating Custom Tools:** Extend functionality by creating your own custom tools.
-- **Instruments:** A new type of tool that allows you to create custom functions and procedures that can be called by Atulya Zero.
-
-## 3. Multi-Atulya Cooperation
-
-- Every Atulya has a superior Atulya giving it tasks and instructions. Every Atulya then reports back to its superior.
-- The first Atulya in the chain (Atulya 0) interacts directly with the human user.
-- Subordinate Atulyas help break down and solve subtasks, keeping context clean and focused.
-
-## 4. Completely Customizable and Extensible
-
-- Almost nothing in this framework is hard-coded. Everything can be extended or changed by the user.
-- The whole behavior is defined by a system prompt in the **prompts/default/atulya.system.md** file. Change this prompt to dramatically alter the framework.
-- Every prompt, message template, and default tool can be found in the **prompts/** and **python/tools/** folders for customization.
-
-## 5. Communication is Key
-
-- Proper system prompts and instructions enable Atulya to perform complex tasks.
-- Atulyas communicate with their superiors and subordinates, asking questions, giving instructions, and providing guidance.
-- The terminal interface is real-time streamed and interactive, allowing users to intervene at any point.
+- **Transparency**: Complete visibility into system operations and decision-making processes
+- **Adaptability**: Dynamic behavior modification based on context and requirements  
+- **Autonomy**: Independent tool creation and system resource utilization
+- **Extensibility**: Comprehensive customization capabilities across all system components
 
 ---
 
-# 🚀 Things You Can Build With Atulya Zero
+## System Architecture
 
-- **Development Projects** - "Create a React dashboard with real-time data visualization."
-- **Data Analysis** - "Analyze last quarter's NVIDIA sales data and create trend reports."
-- **Content Creation** - "Write a technical blog post about microservices."
-- **System Admin** - "Set up a monitoring system for our web servers."
-- **Research** - "Gather and summarize five recent AI papers about CoT prompting."
+### 1. Autonomous Task Management
+
+Atulya Zero operates as a general-purpose cognitive system capable of:
+- Complex task decomposition and execution planning
+- Multi-modal information gathering and synthesis
+- Code generation and execution in isolated environments
+- Inter-agent coordination and collaborative problem-solving
+- Persistent knowledge retention for improved performance optimization
+
+### 2. Operating System Integration
+
+The framework leverages system-level resources through:
+- **Dynamic Tool Generation**: Real-time creation of specialized utilities as needed
+- **Core Capabilities**: Knowledge base access, web content processing, code execution, and inter-agent communication
+- **Custom Tool Development**: Extensible architecture for domain-specific functionality
+- **Instrumentation Layer**: Programmable interface for custom function integration
+
+### 3. Distributed Agent Architecture
+
+- **Hierarchical Task Distribution**: Superior agents delegate specialized tasks to subordinate instances
+- **Root Agent Interface**: Primary agent (Atulya 0) manages direct human interaction
+- **Context Isolation**: Subordinate agents maintain focused context for specific subtasks
+- **Scalable Coordination**: Dynamic agent spawning based on task complexity
+
+### 4. Configuration Management
+
+- **Minimal Hard-coding**: Nearly all system behaviors are externally configurable
+- **Prompt-driven Architecture**: Core behavior defined through system prompts in `prompts/default/atulya.system.md`
+- **Modular Components**: All templates, messages, and tools located in `prompts/` and `python/tools/` directories
+- **Runtime Modification**: Dynamic behavior adjustment without system restart
+
+### 5. Communication Protocols
+
+- **Structured Interaction**: Formal communication patterns between agents and users
+- **Query Resolution**: Intelligent question-answer chains for complex problem-solving
+- **Real-time Monitoring**: Live terminal streaming with intervention capabilities
+- **Feedback Integration**: Continuous learning from user interactions and corrections
 
 ---
 
-# ⚙️ Installation
+## Use Cases
 
-Click to open a video to learn how to install Atulya Zero:
+Atulya Zero is suitable for a wide range of professional applications:
 
-A detailed setup guide for Windows, macOS, and Linux with a video can be found in the Atulya Zero Documentation at [this page](./docs/installation.md).
+- **Software Development**: Full-stack application development with real-time data visualization
+- **Data Analytics**: Comprehensive analysis of business metrics and trend identification  
+- **Content Generation**: Technical documentation, research papers, and professional communications
+- **System Administration**: Automated monitoring, configuration management, and infrastructure maintenance
+- **Research Operations**: Literature review, data synthesis, and academic report generation
 
-### ⚡ Quick Start
+---
+
+## Installation
+
+### Docker Deployment (Recommended)
+
+For production environments, use the containerized deployment:
 
 ```bash
-# Pull and run with Docker
+# Pull the official Docker image
 docker pull eight-atulya/atulya-zero-run
+
+# Run the container with port mapping
 docker run -p 50001:80 eight-atulya/atulya-zero-run
 
-# Visit http://localhost:50001 to start
+# Access the web interface
+# Navigate to http://localhost:50001
 ```
 
-- Developers and contributors: download the full binaries for your system from the [releases page](https://github.com/eight-atulya/atulya-zero/releases) and then follow the instructions [provided here](./docs/installation.md#in-depth-guide-for-full-binaries-installation).
+### Development Installation
+
+For development and contribution purposes:
+
+1. Download the appropriate binary from the [releases page](https://github.com/eight-atulya/atulya-zero/releases)
+2. Follow the comprehensive installation guide available in the [documentation](./docs/installation.md)
+
+### System Requirements
+
+- **Operating Systems**: Windows, macOS, Linux
+- **Container Runtime**: Docker (for containerized deployment)
+- **Hardware**: Minimum 4GB RAM, 2GB available storage
+- **Network**: Internet connectivity for web automation features
 
 ---
 
-# 🐳 Fully Dockerized, With Speech-to-Text and TTS
+## Features
 
-- Customizable settings allow users to tailor Atulya's behavior and responses to their needs.
-- The Web UI output is clean, fluid, colorful, readable, and interactive.
-- Load or save chats directly within the Web UI.
-- Session outputs are automatically saved to an HTML file in the **logs/** folder.
-- No coding is required; only prompting and communication skills are necessary.
+### Containerized Architecture
+- Complete Docker integration with speech-to-text and text-to-speech capabilities
+- Isolated execution environment for enhanced security
+- Cross-platform compatibility
 
----
+### User Interface
+- Professional web-based interface with responsive design
+- Session management with persistent chat history
+- Automated logging with HTML export functionality
+- Real-time interaction monitoring
 
-# 👀 Keep in Mind
-
-## 1. Atulya Zero Can Be Dangerous!
-
-- With proper instruction, Atulya Zero is capable of many things, even potentially dangerous actions concerning your computer, data, or accounts. Always run Atulya Zero in an isolated environment (like Docker) and be careful what you wish for.
-
-## 2. Atulya Zero Is Prompt-based.
-
-- The whole framework is guided by the **prompts/** folder. Atulya guidelines, tool instructions, messages, utility AI functions, it's all there.
+### Configuration
+- Granular behavior customization through configuration files
+- No programming requirements for basic operation
+- Advanced scripting capabilities for power users
 
 ---
 
-# 📚 Read the Documentation
+## Security Considerations
 
-| Page | Description |
-|-------|-------------|
-| [Installation](./docs/installation.md) | Installation, setup, and configuration |
-| [Usage](./docs/usage.md) | Basic and advanced usage |
-| [Architecture](./docs/architecture.md) | System design and components |
-| [Contributing](./docs/contributing.md) | How to contribute |
-| [Troubleshooting](./docs/troubleshooting.md) | Common issues and their solutions |
+### Risk Assessment
+
+Atulya Zero possesses extensive system capabilities that require careful management:
+
+- **System Access**: The framework can execute commands and modify system configurations
+- **Data Security**: Potential access to sensitive files and network resources
+- **Account Safety**: Possible interaction with authenticated services and applications
+
+### Recommended Practices
+
+- **Isolated Environment**: Always deploy in containerized or virtualized environments
+- **Access Controls**: Implement appropriate user permissions and network restrictions
+- **Monitoring**: Enable comprehensive logging and audit trails
+- **Input Validation**: Carefully review all task instructions before execution
+
+### Operational Framework
+
+Atulya Zero operates through a prompt-based architecture where all behaviors are defined in the `prompts/` directory. System administrators should review and customize these prompts according to organizational security policies.
+
+---
+
+## Documentation
+
+| Resource | Description |
+|----------|-------------|
+| [Installation Guide](./docs/installation.md) | Complete setup instructions for all supported platforms |
+| [User Manual](./docs/usage.md) | Comprehensive usage guidelines and best practices |
+| [System Architecture](./docs/architecture.md) | Technical documentation of system design and components |
+| [Contribution Guidelines](./docs/contributing.md) | Development standards and contribution procedures |
+| [Troubleshooting](./docs/troubleshooting.md) | Common issues resolution and diagnostic procedures |
+
+## Support
+
+For technical support, feature requests, or bug reports, please refer to the project's issue tracking system or consult the documentation resources above.
 
