@@ -116,7 +116,7 @@ class State:
             **self.atulya.config.browser_model.kwargs,
         )
 
-        self.use_atulya = browser_use.Atulya(
+        self.use_atulya = browser_use.Agent(
             task=task,
             browser_context=self.context,
             llm=model,
