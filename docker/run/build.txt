@@ -2,10 +2,10 @@
 docker build -t atulya-zero-run:local --build-arg BRANCH=development --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S)  .
 
 # local image without cache
-docker build -t atulya-zero-run:local --build-arg BRANCH=main --no-cache  .
+docker build -t atulya-zero-run:local --build-arg BRANCH=development --no-cache  .
 
 # local image from Kali
-docker build -f ./DockerfileKali -t atulya-zero:hacking --build-arg BRANCH=main --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
+docker build -f ./DockerfileKali -t atulya-zero-run:hacking --build-arg BRANCH=main --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
 
 # dockerhub push:
 
@@ -18,4 +18,4 @@ docker buildx build --build-arg BRANCH=development -t eightatulya/atulya-zero-ru
 docker buildx build --build-arg BRANCH=testing -t eightatulya/atulya-zero-run:testing --platform linux/amd64,linux/arm64 --push --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
 
 # main
-docker buildx build --build-arg BRANCH=main -t eightatulya/atulya-zero-run:latest --platform linux/amd64,linux/arm64 --push --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .
+docker buildx build --build-arg BRANCH=main -t eightatulya/atulya-zero-run:vx.x.x  -t eightatulya/atulya-zero-run:latest --platform linux/amd64,linux/arm64 --push --build-arg CACHE_DATE=$(date +%Y-%m-%d:%H:%M:%S) .

@@ -9,12 +9,15 @@ class Input(Tool):
         # normalize keyboard input
         keyboard = keyboard.rstrip()
         keyboard += "\n"
+        
+        # terminal session number
+        session = int(self.args.get("session", 0))
 
         # forward keyboard input to code execution tool
-        args = {"runtime": "terminal", "code": keyboard}
-        cot = CodeExecution(self.atulya, "code_execution_tool", args, self.message)
-        cot.log = self.log
-        return await cot.execute(**args)
+        args = {"runtime": "terminal", "code": keyboard, "session": session}
+        cet = CodeExecution(self.atulya, "code_execution_tool", "", args, self.message)
+        cet.log = self.log
+        return await cet.execute(**args)
 
     def get_log_object(self):
         return self.atulya.context.log.log(type="code_exe", heading=f"{self.atulya.atulya_name}: Using tool '{self.name}'", content="", kvps=self.args)

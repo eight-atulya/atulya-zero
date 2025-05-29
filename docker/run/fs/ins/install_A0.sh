@@ -8,7 +8,7 @@ fi
 BRANCH="$1"
 
 # clone project repo branch
-git clone -b "$BRANCH" "https://github.com/eight-atulya/atulya-zero" "/git/atulya-zero"
+git clone -b "$BRANCH" "https://github.com/eightatulya/atulya-zero" "/git/atulya-zero"
 
 # setup python environment
 . "/ins/setup_venv.sh" "$@"
@@ -21,6 +21,9 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 
 # Install remaining A0 python packages
 pip install -r /git/atulya-zero/requirements.txt
+
+# install playwright
+bash /ins/install_playwright.sh "$@"
 
 # Preload A0
 python /git/atulya-zero/preload.py --dockerized=true

@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from python.helpers.extension import Extension
 from atulya import Atulya, LoopData
+from python.helpers.localization import Localization
 
 
 class SystemPrompt(Extension):
@@ -14,22 +15,11 @@ class SystemPrompt(Extension):
 
 
 def get_main_prompt(atulya: Atulya):
-    return get_prompt("atulya.system.main.md", atulya)
+    return atulya.read_prompt("atulya.system.main.md")
 
 
 def get_tools_prompt(atulya: Atulya):
-    prompt = get_prompt("atulya.system.tools.md", atulya)
+    prompt = atulya.read_prompt("atulya.system.tools.md")
     if atulya.config.chat_model.vision:
-        prompt += '\n' + get_prompt("atulya.system.tools_vision.md", atulya)
+        prompt += '\n' + atulya.read_prompt("atulya.system.tools_vision.md")
     return prompt
-
-
-def get_prompt(file: str, atulya: Atulya):
-    # variables for system prompts
-    # TODO: move variables to the end of chain
-    # variables in system prompt would break prompt caching, better to add them to the last message in conversation
-    vars = {
-        "date_time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "atulya_name": atulya.atulya_name,
-    }
-    return atulya.read_prompt(file, **vars)

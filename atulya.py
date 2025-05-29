@@ -1,31 +1,25 @@
 import asyncio
 from collections import OrderedDict
 from dataclasses import dataclass, field
-import time, importlib, inspect, os, json
-import token
+from datetime import datetime
+import json
 from typing import Any, Awaitable, Coroutine, Optional, Dict, TypedDict
 import uuid
 import models
 
-from langchain_core.prompt_values import ChatPromptValue
 from python.helpers import extract_tools, rate_limiter, files, errors, history, tokens
+from python.helpers import dirty_json
 from python.helpers.print_style import PrintStyle
 from langchain_core.prompts import (
     ChatPromptTemplate,
-    MessagesPlaceholder,
-    HumanMessagePromptTemplate,
-    StringPromptTemplate,
 )
-from langchain_core.prompts.image import ImagePromptTemplate
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.language_models.llms import BaseLLM
-from langchain_core.embeddings import Embeddings
+
 import python.helpers.log as Log
 from python.helpers.dirty_json import DirtyJson
 from python.helpers.defer import DeferredTask
 from typing import Callable
-from python.helpers.history import OutputMessage
+from python.helpers.localization import Localization
 
 
 class AtulyaContext:
@@ -42,6 +36,7 @@ class AtulyaContext:
         log: Log.Log | None = None,
         paused: bool = False,
         streaming_atulya: "Atulya|None" = None,
+        created_at: datetime | None = None,
     ):
         # build context
         self.id = id or str(uuid.uuid4())
@@ -52,6 +47,7 @@ class AtulyaContext:
         self.paused = paused
         self.streaming_atulya = streaming_atulya
         self.task: DeferredTask | None = None
+        self.created_at = created_at or datetime.now()
         AtulyaContext._counter += 1
         self.no = AtulyaContext._counter
 
@@ -76,6 +72,24 @@ class AtulyaContext:
         if context and context.task:
             context.task.kill()
         return context
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "created_at": (
+                Localization.get().serialize_datetime(self.created_at)
+                if self.created_at else Localization.get().serialize_datetime(datetime.fromtimestamp(0))
+            ),
+            "no": self.no,
+            "log_guid": self.log.guid,
+            "log_version": len(self.log.updates),
+            "log_length": len(self.log.logs),
+            "paused": self.paused,
+        }
+
+    def get_created_at(self):
+        return self.created_at
 
     def kill_process(self):
         if self.task:
@@ -141,10 +155,10 @@ class AtulyaContext:
                     tool_name="call_subordinate", tool_result=msg  # type: ignore
                 )
             )
-            response = await atulya.monologue()
+            response = await atulya.monologue()  # type: ignore
             superior = atulya.data.get(Atulya.DATA_NAME_SUPERIOR, None)
             if superior:
-                response = await self._process_chain(superior, response, False)
+                response = await self._process_chain(superior, response, False)  # type: ignore
             return response
         except Exception as e:
             atulya.handle_critical_exception(e)
@@ -173,7 +187,7 @@ class AtulyaConfig:
     knowledge_subdirs: list[str] = field(default_factory=lambda: ["default", "custom"])
     code_exec_docker_enabled: bool = False
     code_exec_docker_name: str = "A0-dev"
-    code_exec_docker_image: str = "eight-atulya/atulya-zero-run:development"
+    code_exec_docker_image: str = "eightatulya/atulya-zero-run:development"
     code_exec_docker_ports: dict[str, int] = field(
         default_factory=lambda: {"22/tcp": 55022, "80/tcp": 55080}
     )
@@ -195,6 +209,7 @@ class AtulyaConfig:
 class UserMessage:
     message: str
     attachments: list[str] = field(default_factory=list[str])
+    system_message: list[str] = field(default_factory=list[str])
 
 
 class LoopData:
@@ -267,6 +282,9 @@ class Atulya:
                     self.context.streaming_atulya = self  # mark self as current streamer
                     self.loop_data.iteration += 1
 
+                    # call message_loop_start extensions
+                    await self.call_extensions("message_loop_start", loop_data=self.loop_data)
+
                     try:
                         # prepare LLM chain (model, system, history)
                         prompt = await self.prepare_prompt(loop_data=self.loop_data)
@@ -290,7 +308,7 @@ class Atulya:
 
                         atulya_response = await self.call_chat_model(
                             prompt, callback=stream_callback
-                        )
+                        )  # type: ignore
 
                         await self.handle_intervention(atulya_response)
 
@@ -345,19 +363,27 @@ class Atulya:
                 await self.call_extensions("monologue_end", loop_data=self.loop_data)  # type: ignore
 
     async def prepare_prompt(self, loop_data: LoopData) -> ChatPromptTemplate:
+        # call extensions before setting prompts
+        await self.call_extensions("message_loop_prompts_before", loop_data=loop_data)
+
         # set system prompt and message history
         loop_data.system = await self.get_system_prompt(self.loop_data)
         loop_data.history_output = self.history.output()
 
         # and allow extensions to edit them
-        await self.call_extensions("message_loop_prompts", loop_data=loop_data)
+        await self.call_extensions("message_loop_prompts_after", loop_data=loop_data)
 
         # extras (memory etc.)
-        extras: list[history.OutputMessage] = []
-        for extra in loop_data.extras_persistent.values():
-            extras += history.Message(False, content=extra).output()
-        for extra in loop_data.extras_temporary.values():
-            extras += history.Message(False, content=extra).output()
+        # extras: list[history.OutputMessage] = []
+        # for extra in loop_data.extras_persistent.values():
+        #     extras += history.Message(False, content=extra).output()
+        # for extra in loop_data.extras_temporary.values():
+        #     extras += history.Message(False, content=extra).output()
+        extras = history.Message(
+            False, 
+            content=self.read_prompt("atulya.context.extras.md", extras=dirty_json.stringify(
+                {**loop_data.extras_persistent, **loop_data.extras_temporary}
+                ))).output()
         loop_data.extras_temporary.clear()
 
         # convert history + extras to LLM format
@@ -466,21 +492,19 @@ class Atulya:
                 "fw.intervention.md",
                 message=message.message,
                 attachments=message.attachments,
+                system_message=message.system_message
             )
         else:
             content = self.parse_prompt(
                 "fw.user_message.md",
                 message=message.message,
                 attachments=message.attachments,
+                system_message=message.system_message
             )
 
-        # remove empty attachments from template
-        if (
-            isinstance(content, dict)
-            and "attachments" in content
-            and not content["attachments"]
-        ):
-            del content["attachments"]
+        # remove empty parts from template
+        if isinstance(content, dict):
+            content = {k: v for k, v in content.items() if v}
 
         # add to history
         msg = self.hist_add_message(False, content=content)  # type: ignore
@@ -645,8 +669,13 @@ class Atulya:
 
         if tool_request is not None:
             tool_name = tool_request.get("tool_name", "")
+            tool_method = None
             tool_args = tool_request.get("tool_args", {})
-            tool = self.get_tool(tool_name, tool_args, msg)
+
+            if ":" in tool_name:
+                tool_name, tool_method = tool_name.split(":", 1)
+
+            tool = self.get_tool(name=tool_name, method=tool_method, args=tool_args, message=msg)
 
             await self.handle_intervention()  # wait if paused and handle intervention message if needed
             await tool.before_execution(**tool_args)
@@ -676,7 +705,7 @@ class Atulya:
         except Exception as e:
             pass
 
-    def get_tool(self, name: str, args: dict, message: str, **kwargs):
+    def get_tool(self, name: str, method: str | None, args: dict, message: str, **kwargs):
         from python.tools.unknown import Unknown
         from python.helpers.tool import Tool
 
@@ -684,7 +713,7 @@ class Atulya:
             "python/tools", name + ".py", Tool
         )
         tool_class = classes[0] if classes else Unknown
-        return tool_class(atulya=self, name=name, args=args, message=message, **kwargs)
+        return tool_class(atulya=self, name=name, method=method, args=args, message=message, **kwargs)
 
     async def call_extensions(self, folder: str, **kwargs) -> Any:
         from python.helpers.extension import Extension

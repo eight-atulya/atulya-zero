@@ -38,7 +38,7 @@ class SSHInteractiveSession:
                     self.port,
                     self.username,
                     self.password,
-                    allow_agent=False,
+                    allow_atulya=False,
                     look_for_keys=False,
                 )
                 self.shell = self.client.invoke_shell(width=160, height=48)
@@ -195,6 +195,9 @@ class SSHInteractiveSession:
 
         # Replace '\r\n' with '\n'
         cleaned = cleaned.replace("\r\n", "\n")
+
+        # remove leading \r
+        cleaned = cleaned.lstrip("\r")
 
         # Split the string by newline characters to process each segment separately
         lines = cleaned.split("\n")

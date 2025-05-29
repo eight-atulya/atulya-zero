@@ -55,7 +55,7 @@ def initialize():
         knowledge_subdirs=["default", current_settings["atulya_knowledge_subdir"]],
         code_exec_docker_enabled=False,
         # code_exec_docker_name = "A0-dev",
-        # code_exec_docker_image = "eight-atulya/atulya-zero-run:development",
+        # code_exec_docker_image = "eightatulya/atulya-zero-run:development",
         # code_exec_docker_ports = { "22/tcp": 55022, "80/tcp": 55080 }
         # code_exec_docker_volumes = {
         # files.get_base_dir(): {"bind": "/a0", "mode": "rw"},

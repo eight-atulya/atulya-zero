@@ -3,16 +3,15 @@ import json
 import time
 from atulya import Atulya, InterventionException
 
-import browser_use.agent
 import models
 from python.helpers.tool import Tool, Response
-from python.helpers import dirty_json, files, rfc_exchange, defer, strings, persist_chat
-from python.helpers.print_style import PrintStyle
+from python.helpers import files, defer, persist_chat
 from python.helpers.browser_use import browser_use
 from python.extensions.message_loop_start._10_iteration_no import get_iter_no
 from pydantic import BaseModel
 import uuid
-
+from python.helpers.dirty_json import DirtyJson
+from langchain_core.messages import SystemMessage
 
 class State:
     @staticmethod
@@ -84,10 +83,10 @@ class State:
         await self._initialize()
 
         class CustomSystemPrompt(browser_use.SystemPrompt):
-            def important_rules(self) -> str:
-                existing_rules = super().important_rules()
+            def get_system_message(self) -> SystemMessage:
+                existing_rules = super().get_system_message().text()
                 new_rules = atulya.read_prompt("prompts/browser_agent.system.md")
-                return f"{existing_rules}\n{new_rules}".strip()
+                return SystemMessage(content=f"{existing_rules}\n{new_rules}".strip())
 
         # Model of task result
         class DoneResult(BaseModel):
@@ -117,7 +116,7 @@ class State:
             **self.atulya.config.browser_model.kwargs,
         )
 
-        self.use_atulya = browser_use.Agent(
+        self.use_atulya = browser_use.Atulya(
             task=task,
             browser_context=self.context,
             llm=model,
@@ -160,9 +159,10 @@ class State:
 
 class BrowserAtulya(Tool):
 
-    async def execute(self, message="", **kwargs):
+    async def execute(self, message="", reset="", **kwargs):
         self.guid = str(uuid.uuid4())
-        await self.prepare_state()
+        reset = str(reset).lower().strip() == "true"
+        await self.prepare_state(reset=reset)
         task = self.state.start_task(message)
 
         # wait for browser atulya to finish and update progress
@@ -184,7 +184,7 @@ class BrowserAtulya(Tool):
         result = await task.result()
         answer = result.final_result()
         try:
-            answer_data = dirty_json.DirtyJson.parse_string(answer)
+            answer_data = DirtyJson.parse_string(answer)
             answer_text = strings.dict_to_text(answer_data)  # type: ignore
         except Exception as e:
             answer_text = answer

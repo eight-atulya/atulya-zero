@@ -15,3 +15,4 @@ else
     # for debian based
     playwright install --with-deps chromium-headless-shell
 fi
+

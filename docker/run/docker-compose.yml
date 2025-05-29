@@ -1,7 +1,7 @@
 services:
   atulya-zero:
     container_name: atulya-zero
-    image: eight-atulya/atulya-zero-run:main
+    image: eightatulya/atulya-zero-run:testing
     volumes:
       - ./atulya-zero:/a0
     ports:
