@@ -1,0 +1,1387 @@
+{
+  "info": {
+    "name": "Atulya Zero API Tests",
+    "description": "Comprehensive API testing collection for Atulya Zero",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "atulya-zero-api-tests",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{auth_username}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{auth_password}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script for all requests",
+          "pm.globals.set('timestamp', new Date().toISOString());",
+          "",
+          "// Generate test data",
+          "function generateTestData() {",
+          "    return {",
+          "        randomString: Math.random().toString(36).substring(7),",
+          "        randomNumber: Math.floor(Math.random() * 1000),",
+          "        timestamp: new Date().toISOString()",
+          "    };",
+          "}",
+          "",
+          "const testData = generateTestData();",
+          "pm.environment.set('test_data', JSON.stringify(testData));",
+          "",
+          "// Validate required environment variables",
+          "const requiredVars = ['base_url'];",
+          "const missingVars = requiredVars.filter(varName => !pm.environment.get(varName));",
+          "",
+          "if (missingVars.length > 0) {",
+          "    console.warn('Missing required environment variables:', missingVars);",
+          "}",
+          "",
+          "// Set common headers",
+          "pm.request.headers.upsert({",
+          "    key: 'Content-Type',",
+          "    value: 'application/json'",
+          "});"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script for all requests",
+          "pm.test('Response time is reasonable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+          "});",
+          "",
+          "pm.test('No internal server errors', function () {",
+          "    pm.expect(pm.response.code).to.not.equal(500);",
+          "});",
+          "",
+          "// Log response for debugging",
+          "if (pm.response.code !== 200) {",
+          "    console.log('Response Status:', pm.response.status);",
+          "    console.log('Response Body:', pm.response.text());",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "{{base_url}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01_System_Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Health check returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains git info', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('gitinfo');",
+                  "});",
+                  "",
+                  "// Store git info for later use",
+                  "const response = pm.response.json();",
+                  "if (response.gitinfo && response.gitinfo.version) {",
+                  "    pm.environment.set('git_version', response.gitinfo.version);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Basic health check endpoint to verify API is running"
+          }
+        },
+        {
+          "name": "Basic Connectivity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Can connect to API', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 401, 403]);",
+                  "});",
+                  "",
+                  "pm.test('Server is responding', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Test basic connectivity to the API server"
+          }
+        }
+      ],
+      "description": "Basic system health and connectivity tests"
+    },
+    {
+      "name": "02_Authentication",
+      "item": [
+        {
+          "name": "Basic Auth Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Basic auth works', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Authenticated request successful', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Test basic authentication with valid credentials"
+          }
+        },
+        {
+          "name": "Invalid Auth Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid auth returns 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Unauthorized message present', function () {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText.toLowerCase()).to.include('unauthorized');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "basic",
+              "basic": [
+                {
+                  "key": "username",
+                  "value": "invalid_user",
+                  "type": "string"
+                },
+                {
+                  "key": "password",
+                  "value": "invalid_pass",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Test authentication failure with invalid credentials"
+          }
+        }
+      ],
+      "description": "Authentication and authorization tests"
+    },
+    {
+      "name": "03_Core_Messaging",
+      "item": [
+        {
+          "name": "Send Message (JSON)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Message sent successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains message and context', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message');",
+                  "    pm.expect(jsonData).to.have.property('context');",
+                  "    ",
+                  "    // Store context ID for subsequent requests",
+                  "    pm.environment.set('context_id', jsonData.context);",
+                  "});",
+                  "",
+                  "pm.test('Context ID is valid format', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.context).to.be.a('string');",
+                  "    pm.expect(jsonData.context.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Hello, this is a test message from Postman\",\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/message",
+              "host": ["{{base_url}}"],
+              "path": ["message"]
+            },
+            "description": "Send a text message using JSON format"
+          }
+        },
+        {
+          "name": "Message Async",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Async message accepted', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response indicates message received', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.include('received');",
+                  "});",
+                  "",
+                  "pm.test('Response time is fast (async)', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"Async test message\",\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/message_async",
+              "host": ["{{base_url}}"],
+              "path": ["message_async"]
+            },
+            "description": "Send asynchronous message that returns immediately"
+          }
+        },
+        {
+          "name": "Pause System",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Pause command successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms pause state', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('pause');",
+                  "    pm.expect(jsonData.pause).to.be.a('boolean');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"paused\": true,\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pause",
+              "host": ["{{base_url}}"],
+              "path": ["pause"]
+            },
+            "description": "Pause the Atulya Zero system"
+          }
+        },
+        {
+          "name": "Unpause System",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Unpause command successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response confirms unpause state', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.pause).to.be.false;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"paused\": false,\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pause",
+              "host": ["{{base_url}}"],
+              "path": ["pause"]
+            },
+            "description": "Unpause the Atulya Zero system"
+          }
+        },
+        {
+          "name": "RFC Call",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('RFC call processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains result', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"function\": \"test_function\",\n    \"args\": [\"arg1\", \"arg2\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/rfc",
+              "host": ["{{base_url}}"],
+              "path": ["rfc"]
+            },
+            "description": "Test remote function call"
+          }
+        }
+      ],
+      "description": "Core messaging and communication functionality"
+    },
+    {
+      "name": "04_File_Management",
+      "item": [
+        {
+          "name": "List Work Dir Files",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Directory listing successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains data structure', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('data');",
+                  "});",
+                  "",
+                  "// Store first file path for download testing",
+                  "const response = pm.response.json();",
+                  "if (response.data && response.data.files && response.data.files.length > 0) {",
+                  "    pm.environment.set('file_path', response.data.files[0].path || response.data.files[0]);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/get_work_dir_files?path={{file_path}}",
+              "host": ["{{base_url}}"],
+              "path": ["get_work_dir_files"],
+              "query": [
+                {
+                  "key": "path",
+                  "value": "{{file_path}}"
+                }
+              ]
+            },
+            "description": "List files in the working directory"
+          }
+        },
+        {
+          "name": "Get Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Image request processed', function () {",
+                  "    // Accept both success and not found",
+                  "    pm.expect([200, 404, 400]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response is image file', function () {",
+                  "        const contentType = pm.response.headers.get('Content-Type');",
+                  "        if (contentType) {",
+                  "            pm.expect(contentType).to.include('image');",
+                  "        }",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/image_get?path=test.png",
+              "host": ["{{base_url}}"],
+              "path": ["image_get"],
+              "query": [
+                {
+                  "key": "path",
+                  "value": "test.png"
+                }
+              ]
+            },
+            "description": "Retrieve an image file with path validation"
+          }
+        },
+        {
+          "name": "File Info",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('File info request processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"path\": \"{{file_path}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/file_info",
+              "host": ["{{base_url}}"],
+              "path": ["file_info"]
+            },
+            "description": "Get information about a specific file"
+          }
+        }
+      ],
+      "description": "File management and operations"
+    },
+    {
+      "name": "05_Chat_Context",
+      "item": [
+        {
+          "name": "Get History",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('History retrieved successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains history and tokens', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('history');",
+                  "    pm.expect(jsonData).to.have.property('tokens');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/history_get",
+              "host": ["{{base_url}}"],
+              "path": ["history_get"]
+            },
+            "description": "Retrieve conversation history for a context"
+          }
+        },
+        {
+          "name": "Export Chat",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Chat export successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Export contains chat data', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData).to.have.property('ctxid');",
+                  "    ",
+                  "    // Store exported data for import testing",
+                  "    if (jsonData.content) {",
+                  "        pm.environment.set('chat_export_data', JSON.stringify([jsonData.content]));",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"ctxid\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat_export",
+              "host": ["{{base_url}}"],
+              "path": ["chat_export"]
+            },
+            "description": "Export chat conversation data"
+          }
+        },
+        {
+          "name": "Load Chat",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Chat load processed', function () {",
+                  "    // Accept both success and error cases",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Load returns context IDs', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('ctxids');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"chats\": {{chat_export_data}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat_load",
+              "host": ["{{base_url}}"],
+              "path": ["chat_load"]
+            },
+            "description": "Load chat conversation data"
+          }
+        },
+        {
+          "name": "Chat Reset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Chat reset processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"context\": \"{{context_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat_reset",
+              "host": ["{{base_url}}"],
+              "path": ["chat_reset"]
+            },
+            "description": "Reset chat conversation"
+          }
+        }
+      ],
+      "description": "Chat and context management operations"
+    },
+    {
+      "name": "06_Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Settings retrieved successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains settings', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('settings');",
+                  "    pm.expect(jsonData.settings).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/settings_get",
+              "host": ["{{base_url}}"],
+              "path": ["settings_get"]
+            },
+            "description": "Retrieve current application settings"
+          }
+        },
+        {
+          "name": "Set Settings",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Settings updated successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains updated settings', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('settings');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"test_setting\": \"test_value\",\n    \"timestamp\": \"{{timestamp}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/settings_set",
+              "host": ["{{base_url}}"],
+              "path": ["settings_set"]
+            },
+            "description": "Update application settings"
+          }
+        }
+      ],
+      "description": "Settings and configuration management"
+    },
+    {
+      "name": "07_Task_Scheduling",
+      "item": [
+        {
+          "name": "List Tasks",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Task list retrieved', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains tasks', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an('object');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"timezone\": \"{{timezone}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/scheduler_tasks_list",
+              "host": ["{{base_url}}"],
+              "path": ["scheduler_tasks_list"]
+            },
+            "description": "List all scheduled tasks"
+          }
+        },
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Task creation processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "// Store task ID if provided",
+                  "try {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.task_id) {",
+                  "        pm.environment.set('task_id', jsonData.task_id);",
+                  "    }",
+                  "} catch (e) {",
+                  "    // Ignore parsing errors",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Test Task\",\n    \"schedule\": \"0 */1 * * *\",\n    \"action\": \"test_action\",\n    \"enabled\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/scheduler_task_create",
+              "host": ["{{base_url}}"],
+              "path": ["scheduler_task_create"]
+            },
+            "description": "Create a new scheduled task"
+          }
+        },
+        {
+          "name": "Scheduler Tick",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Scheduler tick processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/scheduler_tick",
+              "host": ["{{base_url}}"],
+              "path": ["scheduler_tick"]
+            },
+            "description": "Trigger a scheduler tick"
+          }
+        }
+      ],
+      "description": "Task scheduling and management"
+    },
+    {
+      "name": "08_Tunneling",
+      "item": [
+        {
+          "name": "Get Tunnel Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Tunnel status retrieved', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains success flag', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('success');",
+                  "});",
+                  "",
+                  "// Store tunnel URL if available",
+                  "const response = pm.response.json();",
+                  "if (response.tunnel_url) {",
+                  "    pm.environment.set('tunnel_url', response.tunnel_url);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action\": \"get\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/tunnel",
+              "host": ["{{base_url}}"],
+              "path": ["tunnel"]
+            },
+            "description": "Get current tunnel status"
+          }
+        },
+        {
+          "name": "Tunnel Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Tunnel health check successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response indicates success', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action\": \"health\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/tunnel",
+              "host": ["{{base_url}}"],
+              "path": ["tunnel"]
+            },
+            "description": "Check tunnel service health"
+          }
+        }
+      ],
+      "description": "Tunneling and network management"
+    },
+    {
+      "name": "09_Additional_Features",
+      "item": [
+        {
+          "name": "Transcribe Audio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Transcribe request processed', function () {",
+                  "    // Accept various response codes as transcription might not be configured",
+                  "    pm.expect([200, 400, 500]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('Response contains transcription', function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.have.property('transcription');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"audio_file\": \"dGVzdCBhdWRpbyBkYXRh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/transcribe",
+              "host": ["{{base_url}}"],
+              "path": ["transcribe"]
+            },
+            "description": "Test audio transcription with dummy base64 data"
+          }
+        },
+        {
+          "name": "Import Knowledge",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Import knowledge processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"knowledge_data\": \"Test knowledge content\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/import_knowledge",
+              "host": ["{{base_url}}"],
+              "path": ["import_knowledge"]
+            },
+            "description": "Import knowledge base content"
+          }
+        },
+        {
+          "name": "Nudge",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Nudge processed', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is valid', function () {",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/nudge",
+              "host": ["{{base_url}}"],
+              "path": ["nudge"]
+            },
+            "description": "Send a nudge notification"
+          }
+        },
+        {
+          "name": "Poll Updates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Poll successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains updates', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('updates');",
+                  "    pm.expect(jsonData.updates).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/poll",
+              "host": ["{{base_url}}"],
+              "path": ["poll"]
+            },
+            "description": "Poll for system updates"
+          }
+        }
+      ],
+      "description": "Additional features and utilities"
+    },
+    {
+      "name": "10_Error_Scenarios",
+      "item": [
+        {
+          "name": "Invalid Endpoint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid endpoint returns 404', function () {",
+                  "    pm.expect([404, 405]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "pm.test('Error response structure', function () {",
+                  "    // Check if response is JSON with error info",
+                  "    try {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData).to.be.an('object');",
+                  "    } catch (e) {",
+                  "        // Non-JSON error response is also acceptable",
+                  "        pm.expect(pm.response.text()).to.exist;",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/nonexistent_endpoint",
+              "host": ["{{base_url}}"],
+              "path": ["nonexistent_endpoint"]
+            },
+            "description": "Test behavior with invalid endpoint"
+          }
+        },
+        {
+          "name": "Malformed JSON",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Malformed JSON handled gracefully', function () {",
+                  "    pm.expect([400, 500]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "pm.test('Error response provided', function () {",
+                  "    pm.expect(pm.response.text()).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"invalid\": json malformed}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/message",
+              "host": ["{{base_url}}"],
+              "path": ["message"]
+            },
+            "description": "Test handling of malformed JSON requests"
+          }
+        },
+        {
+          "name": "Invalid File Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid file path rejected', function () {",
+                  "    pm.expect([400, 404, 500]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "pm.test('Security validation works', function () {",
+                  "    // Should reject dangerous paths like '../../../etc/passwd'",
+                  "    pm.expect(pm.response.code).to.not.equal(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"path\": \"../../../etc/passwd\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/download_work_dir_file",
+              "host": ["{{base_url}}"],
+              "path": ["download_work_dir_file"]
+            },
+            "description": "Test security validation for file paths"
+          }
+        }
+      ],
+      "description": "Error scenarios and edge cases"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "Atulya Zero API Test Configuration",
+  "description": "Newman CLI configuration for automated API testing",
+  "version": "1.0.0",
+  "configurations": {
+    "development": {
+      "collection": "./Atulya_Zero_API_Tests.postman_collection.json",
+      "environment": "./atulya_zero_dev_environment.postman_environment.json",
+      "reporters": ["cli", "html", "json"],
+      "reporterOptions": {
+        "html": {
+          "export": "./reports/test-results-dev.html"
+        },
+        "json": {
+          "export": "./reports/test-results-dev.json"
+        }
+      },
+      "iterationCount": 1,
+      "timeoutRequest": 30000,
+      "timeoutScript": 5000,
+      "delayRequest": 100
+    },
+    "staging": {
+      "collection": "./Atulya_Zero_API_Tests.postman_collection.json", 
+      "environment": "./atulya_zero_staging_environment.postman_environment.json",
+      "reporters": ["cli", "html", "json"],
+      "reporterOptions": {
+        "html": {
+          "export": "./reports/test-results-staging.html"
+        },
+        "json": {
+          "export": "./reports/test-results-staging.json"
+        }
+      },
+      "iterationCount": 1,
+      "timeoutRequest": 45000,
+      "timeoutScript": 10000,
+      "delayRequest": 500
+    },
+    "performance": {
+      "collection": "./Atulya_Zero_API_Tests.postman_collection.json",
+      "environment": "./atulya_zero_dev_environment.postman_environment.json",
+      "reporters": ["cli", "json"],
+      "reporterOptions": {
+        "json": {
+          "export": "./reports/performance-results.json"
+        }
+      },
+      "iterationCount": 10,
+      "timeoutRequest": 60000,
+      "timeoutScript": 10000,
+      "delayRequest": 1000
+    },
+    "smoke": {
+      "collection": "./Atulya_Zero_API_Tests.postman_collection.json",
+      "environment": "./atulya_zero_dev_environment.postman_environment.json",
+      "folder": ["Core Messaging", "System & Monitoring"],
+      "reporters": ["cli"],
+      "iterationCount": 1,
+      "timeoutRequest": 15000,
+      "bail": true
+    }
+  },
+  "scripts": {
+    "test:dev": "newman run $collection -e $environment --reporters cli,html --reporter-html-export reports/dev-results.html",
+    "test:staging": "newman run $collection -e $environment --reporters cli,html --reporter-html-export reports/staging-results.html --delay-request 500",
+    "test:performance": "newman run $collection -e $environment -n 10 --delay-request 1000 --reporters cli,json --reporter-json-export reports/performance.json",
+    "test:smoke": "newman run $collection -e $environment --folder 'Core Messaging' --folder 'System & Monitoring' --bail",
+    "test:full": "newman run $collection -e $environment --reporters cli,html,json --reporter-html-export reports/full-results.html --reporter-json-export reports/full-results.json"
+  },
+  "docker": {
+    "image": "postman/newman:alpine",
+    "volumes": [
+      "./:/workspace"
+    ],
+    "workdir": "/workspace",
+    "commands": {
+      "dev": "docker run -v $(pwd):/workspace -w /workspace postman/newman:alpine run Atulya_Zero_API_Tests.postman_collection.json -e atulya_zero_dev_environment.postman_environment.json --reporters cli,html --reporter-html-export reports/docker-results.html",
+      "ci": "docker run -v $(pwd):/workspace -w /workspace postman/newman:alpine run Atulya_Zero_API_Tests.postman_collection.json -e atulya_zero_dev_environment.postman_environment.json --reporters cli,junit --reporter-junit-export reports/junit-results.xml"
+    }
+  },
+  "github_actions": {
+    "workflow_file": ".github/workflows/api-tests.yml",
+    "example": "# Example GitHub Actions workflow\nname: API Tests\non: [push, pull_request]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v3\n      - name: Install Newman\n        run: npm install -g newman\n      - name: Run API Tests\n        run: |\n          cd docs/testing/api\n          newman run Atulya_Zero_API_Tests.postman_collection.json \\\n            -e atulya_zero_dev_environment.postman_environment.json \\\n            --reporters cli,junit \\\n            --reporter-junit-export test-results.xml\n      - name: Publish Test Results\n        uses: dorny/test-reporter@v1\n        if: success() || failure()\n        with:\n          name: API Tests\n          path: docs/testing/api/test-results.xml\n          reporter: java-junit"
+  }
+}
