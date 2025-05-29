@@ -8,7 +8,7 @@ fi
 BRANCH="$1"
 
 # clone project repo branch
-git clone -b "$BRANCH" "https://github.com/eightatulya/atulya-zero" "/git/atulya-zero"
+git clone -b "$BRANCH" "https://github.com/eight-atulya/atulya-zero" "/git/atulya-zero"
 
 # setup python environment
 . "/ins/setup_venv.sh" "$@"
